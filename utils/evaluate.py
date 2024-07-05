@@ -59,7 +59,7 @@ class Evaluator(object):
 
         f1_score, precision, recall, _ = precision_recall_fscore_support(target_acc, clipwise_output_acc,
                                                                          average='weighted')
-        print(target_acc, clipwise_output_acc, acc,f1_score, precision, recall)
+        # print(target_acc, clipwise_output_acc, acc,f1_score, precision, recall)
         statistics = {'average_precision': average_precision, 'accuracy': acc, 'f1_score': f1_score, 'precision':precision,'recall':recall}
 
         return statistics
