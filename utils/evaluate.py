@@ -33,8 +33,8 @@ class Evaluator(object):
             model=self.model, 
             generator=data_loader, 
             return_target=True)
-
-        clipwise_output = output_dict['clipwise_output']    # (audios_num, classes_num)
+        # (audios_num, classes_num)
+        clipwise_output = output_dict['clipwise_output'][:, :-1]
 
         # for c in clipwise_output:
         #     print(c)
@@ -48,18 +48,21 @@ class Evaluator(object):
         if target.is_cuda:
             target = target.cpu()
             target = target.numpy()
-        average_precision = metrics.average_precision_score(
-            target, clipwise_output, average=None)
+        # average_precision = metrics.average_precision_score(
+        #     target, clipwise_output, average=None)
 
         # auc = metrics.roc_auc_score(target, clipwise_output, average=None)
         
         target_acc = np.argmax(target, axis=1)
         clipwise_output_acc = np.argmax(clipwise_output, axis=1)
-        acc = accuracy_score(target_acc, clipwise_output_acc)
+        print('Returned target_acc and clipwise_output_acc')
 
-        f1_score, precision, recall, _ = precision_recall_fscore_support(target_acc, clipwise_output_acc,
-                                                                         average='weighted')
-        # print(target_acc, clipwise_output_acc, acc,f1_score, precision, recall)
-        statistics = {'average_precision': average_precision, 'accuracy': acc, 'f1_score': f1_score, 'precision':precision,'recall':recall}
+        return target_acc,clipwise_output_acc
+        # acc = accuracy_score(target_acc, clipwise_output_acc)
 
-        return statistics
+        # f1_score, precision, recall, _ = precision_recall_fscore_support(target_acc, clipwise_output_acc,
+        #                                                                  average='weighted')
+        # # print(target_acc, clipwise_output_acc, acc,f1_score, precision, recall)
+        # statistics = {'average_precision': average_precision, 'accuracy': acc, 'f1_score': f1_score, 'precision':precision,'recall':recall}
+
+        # return statistics
